@@ -26,7 +26,7 @@ const contactSchema = new mongoose.Schema({
 		required: true,
 		validate: {
 			validator: function (el) {
-				return /^\d{2,3}-\d+$/.test(el)
+				return /^\d{2,3}-\d{1,}$/.test(el)
 			}, message: 'Phone number is formatted incorrectly.'
 		}
 	},
