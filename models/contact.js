@@ -21,7 +21,7 @@ const contactSchema = new mongoose.Schema({
     },
     number: {
         type: String,
-        minLength: 8,
+        minLength: [8, 'Phone number must be of length 8 or longer.'],
         required: true,
         validate: {
             validator: function (el) {

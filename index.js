@@ -16,7 +16,7 @@ const errorHandler = (error, request, response, next) => {
         let fields = Object.values(error.errors).map(el => el.path)
 
         if (errors.length > 1) {
-            const formattedErrors = errors.join('')
+            const formattedErrors = errors.join('\n')
             return response.status(400).json({ messages: formattedErrors,
                                                 fields: fields })
         } else {
