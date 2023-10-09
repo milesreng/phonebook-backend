@@ -14,7 +14,10 @@ mongoose.set('strictQuery',false)
 mongoose.connect(url)
 
 const contactSchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    minLength: 3
+},
   number: String,
 })
 
@@ -39,6 +42,9 @@ if (process.argv.length < 5) {
 
     contact.save().then(result => {
         console.log(`added ${newName} number ${newPhone} to phonebook`)
+        mongoose.connection.close()
+    }).catch(error => {
+        console.log(error.name)
         mongoose.connection.close()
     })
 }
