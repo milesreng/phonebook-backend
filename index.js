@@ -7,22 +7,22 @@ const app = express()
 const Contact = require('./models/contact')
 
 const errorHandler = (error, request, response, next) => {
-    console.log(error.message)
-
+    console.error(error.message)
+  
     if (error.name === 'CastError') {
-        return response.status(400).send({ error: 'malformatted id' })
+      return response.status(400).send({ error: 'malformatted id' })
     } else if (error.name === 'ValidationError') {
-        
         return response.status(400).json({ error: error.message })
     }
+  
     next(error)
-}
+  }
 
 app.use(express.json())
 app.use(cors())
 app.use(express.static('dist'))
 app.use(morgan(`:method :url :status :res[content-length] - :response-time ms :content`))
-app.use(errorHandler)
+
 
 morgan.token('content', function(request, response) {
     return JSON.stringify(request.body)
@@ -94,6 +94,8 @@ app.delete('/api/persons/:id', (request, response, next) => {
         response.status(204).end()
     }).catch(error => next(error))
 })
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
