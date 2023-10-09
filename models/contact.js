@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const validator = require('validator')
 
 mongoose.set('strictQuery', false)
 
@@ -15,12 +16,18 @@ mongoose.connect(url).then(result => {
 const contactSchema = new mongoose.Schema({
     name: {
         type: String,
-        minLength: 3,
-        required: true
+        minLength: [3, 'Name must be at least 3 characters long.'],
+        required: [true, 'Enter a name.']
     },
     number: {
         type: String,
-        required: true
+        minLength: 8,
+        required: true,
+        validate: {
+            validator: function (el) {
+                return /^\d{2,3}-\d$/.test(el)
+            }, message: 'Phone number is formatted incorrectly.'
+        }
     },
   })
   

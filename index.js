@@ -12,7 +12,17 @@ const errorHandler = (error, request, response, next) => {
     if (error.name === 'CastError') {
       return response.status(400).send({ error: 'malformatted id' })
     } else if (error.name === 'ValidationError') {
-        return response.status(400).json({ error: error.message })
+        let errors = Object.values(error.errors).map(el => el.message)
+        let fields = Object.values(error.errors).map(el => el.path)
+
+        if (errors.length > 1) {
+            const formattedErrors = errors.join('')
+            return response.status(400).json({ messages: formattedErrors,
+                                                fields: fields })
+        } else {
+            return response.status(400).json({ messages: errors,
+                fields: fields })
+        }
     }
   
     next(error)
@@ -82,9 +92,11 @@ app.post('/api/persons', (request, response, next) => {
 })
 
 app.put('/api/persons/:id', (request, response) => {
-    const body = request.body
+    const { name, number } = request.body
 
-    Contact.findByIdAndUpdate(request.params.id, body).then(contact => {
+    Contact.findByIdAndUpdate(request.params.id, 
+        { name, number }, 
+        { runValidators: true, context: 'query' }).then(contact => {
         response.json(contact)
     })
 })
